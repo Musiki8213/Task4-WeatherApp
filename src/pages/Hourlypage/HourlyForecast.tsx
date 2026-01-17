@@ -1,11 +1,11 @@
 import React from "react";
 
 interface HourlyForecastProps {
-  data: any; // forecast data from OpenWeather
-  darkMode?: boolean; // optional for dark mode styling
+  data: any;
+  darkMode?: boolean;
 }
 
-export const HourlyForecast: React.FC<HourlyForecastProps> = ({ data, darkMode }) => {
+export const HourlyForecast: React.FC<HourlyForecastProps> = ({ data, darkMode = false }) => {
   if (!data || !data.list) return null;
 
   // Show next 12 hours
@@ -25,21 +25,27 @@ export const HourlyForecast: React.FC<HourlyForecastProps> = ({ data, darkMode }
       case "thunderstorm":
         return "public/thunder-removebg-preview.png";
       default:
-        return "public/unnamedhh-removebg-preview.png";
+        return "public/unnamed__7_-removebg-preview.png";
     }
   };
 
+  const cardBg = darkMode ? "bg-gray-800" : "bg-gray-100";
+  const borderColor = darkMode ? "border-gray-700" : "border-gray-300";
+  const textPrimary = darkMode ? "text-gray-100" : "text-blue-900";
+  const textSecondary = darkMode ? "text-gray-400" : "text-blue-900";
+
   return (
-    <div className="p-6 max-w-4xl ml-[580px] mt-[80px] overflow-auto">
-        
-        
-              <div className="flex gap-4 text-center">
+    <div className="w-full h-full p-2 sm:p-3 overflow-x-auto">
+      <div className="h-full flex gap-2 sm:gap-3 text-center min-w-max">
         {hourlyData.map((f: any, index: number) => {
           const dateObj = new Date(f.dt * 1000);
-          const hour = dateObj.toLocaleTimeString("en-US", {hour: "2-digit", minute: "2-digit", hour12: false});
+          const hour = dateObj.toLocaleTimeString("en-US", {
+            hour: "2-digit", 
+            minute: "2-digit", 
+            hour12: false
+          });
           const condition = f.weather[0].main;
           const imgSrc = getIconPath(condition);
-          
 
           const minTemp = Math.round(f.main.temp_min);
           const maxTemp = Math.round(f.main.temp_max);
@@ -47,38 +53,38 @@ export const HourlyForecast: React.FC<HourlyForecastProps> = ({ data, darkMode }
           return (
             <div
               key={index}
-              className={`bg-gray-100 ${darkMode ? "bg-gray-800 text-white items-center p-3 min-w-[300px] min-h-[550px]" :  "bg-gray-100 items-center p-3 min-w-[300px] min-h-[550px] border-r border-gray-300 last:border-none"}`}
+              className={`${cardBg} flex flex-col items-center justify-between p-2 sm:p-3 min-w-[100px] sm:min-w-[120px] h-full border-r ${borderColor} last:border-none rounded-lg sm:rounded-none first:rounded-l-lg last:rounded-r-lg`}
             > 
-              <p className="font-semibold text-[16px] mb-0.5">{hour}</p>
-                  {/* Icon */}
+              <p className={`font-semibold text-xs sm:text-sm ${textPrimary} mb-1`}>
+                {hour}
+              </p>
+              
+              {/* Icon */}
               <img 
                 src={imgSrc} 
                 alt={condition} 
-                className="w-[200px] h-[200px] mb-4 ml-10 " 
+                className="w-12 h-12 sm:w-16 sm:h-16 mb-2" 
               />
               
               {/* Temperature Range */}
-              <p className={`text-xl font-normal mb-2 ${darkMode ? "text-gray-200" : "text-blue-900"}`}>
-  {minTemp}°C ~ {maxTemp}°C
-</p>
+              <p className={`text-xs sm:text-sm font-normal mb-1 ${textPrimary}`}>
+                {minTemp}° ~ {maxTemp}°
+              </p>
 
               {/* Condition */}
-              <p className={`text-lm font-semibold text-blue-900 uppercase mb-3 ${darkMode ? "text-gray-200" : "text-blue-900"}`}>
+              <p className={`text-xs font-semibold ${textPrimary} uppercase mb-2 line-clamp-2`}>
                 {f.weather[0].description}
               </p>
               
-              {/* Wind and Quality/Humidity */}
-              <div> 
-                {/* Wind */}
-                <p className={`text-xs text-blue-900 ${darkMode ? "text-gray-200" : "text-blue-900"}`}>
-                  Wind: &lt;{Math.round(f.wind.speed * 3.6)}km/h 
+              {/* Wind and Humidity */}
+              <div className="space-y-1 text-xs"> 
+                <p className={textSecondary}>
+                  W: &lt;{Math.round(f.wind.speed * 3.6)}km/h 
                 </p>
-                
+                <p className={textSecondary}>
+                  H: {f.main?.humidity}%
+                </p>
               </div>
-                   <div>
-            <p className={`text-xs  text-blue-900 mt-[15px] ${darkMode ? "text-gray-200" : "text-blue-900"}`}>Humid: {f.main?.humidity}%</p>
-            
-          </div>
             </div>
           );
         })}
