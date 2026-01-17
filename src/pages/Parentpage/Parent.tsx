@@ -1,7 +1,5 @@
 import { useState, useEffect } from "react";
 import { CurrentWeather } from "../Weatherpage/Weather";   
-import { DarkWeather } from "../DarkWeatherpage/DarkWeather"; 
-import { DarkForecast } from "../DarkForecastpage/DarkForecast";
 import { Forecast } from "../Forecastpage/Forecast";
 import { HourlyForecast } from "../Hourlypage/HourlyForecast";
 
@@ -98,88 +96,157 @@ export const WeatherCard = () => {
 
   return (
     <div
-      className={`min-h-screen transition-all duration-500`}
+      className="h-screen overflow-hidden transition-all duration-500"
       style={{
         backgroundImage: darkMode
           ? "url(/unnamed.png)"
           : "url(/background_LE_upscale_balanced_x4.jpg)",
         backgroundSize: "cover",
         backgroundRepeat: "no-repeat",
+        backgroundAttachment: "fixed",
       }}
     >
-      {/* Dark/Light Toggle */}
-      <button
-        onClick={() => setDarkMode(!darkMode)}
-        className="absolute top-33 left-85 px-4 py-2 bg-gray-200 text-black rounded-lg shadow"
-      >
-        {darkMode ? " Light Mode" : " Dark Mode"}
-      </button>
+      <div className="h-full flex flex-col">
+        {/* Header Section with Toggle and Search */}
+        <div className="w-full px-4 py-2 sm:px-6 sm:py-3 flex-shrink-0">
+          <div className="max-w-[1920px] mx-auto">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-2 sm:gap-4">
+              {/* Search Section */}
+              <div className="flex flex-1 w-full sm:w-auto gap-2">
+                <input
+                  type="text"
+                  placeholder="Enter city name"
+                  value={city}
+                  onChange={(e) => setCity(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  className={`flex-1 p-2 sm:p-3 rounded-lg font-semibold shadow-md transition-colors text-sm sm:text-base ${
+                    darkMode
+                      ? "bg-gray-800 text-white placeholder-gray-400 border border-gray-700"
+                      : "bg-white text-blue-700 placeholder-blue-400 border border-blue-200"
+                  }`}
+                />
+                <button
+                  onClick={fetchCityWeather}
+                  className={`px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-semibold shadow-md transition-colors text-sm sm:text-base ${
+                    darkMode
+                      ? "bg-gray-800 text-white hover:bg-gray-700"
+                      : "bg-white text-blue-700 hover:bg-blue-50"
+                  }`}
+                >
+                  Get Weather
+                </button>
+              </div>
 
-      {/* Search */}
-      <input
-        type="text"
-        placeholder="Enter city"
-        value={city}
-        onChange={(e) => setCity(e.target.value)}
-        onKeyDown={handleKeyDown}
-        className={`"mt-[60px] ml-[150px] p-2 rounded-md w-[1600px] font-semibold"
-            ${darkMode ? "bg-gray-800 text-white mt-[60px]" : "bg-white text-blue-700 mt-[60px] "}`}
-      />
-      <br />
-      <button
-        onClick={fetchCityWeather}
-        className={`"mt-[30px] ml-[150px] font-semibold py-2 px-4 rounded-md shadow hover:bg-gray-100"
-       ${darkMode ? "bg-gray-800 text-white mt-[30px] hover:bg-gray-900" : "bg-white text-blue-700 mt-[30px] hover:bg-gray-100"}`}
-     >
-        Get Weather
-      </button>
+              {/* Dark/Light Toggle */}
+              <button
+                onClick={() => setDarkMode(!darkMode)}
+                className={`px-3 sm:px-4 py-2 rounded-lg shadow-md transition-colors flex items-center justify-center ${
+                  darkMode
+                    ? "bg-gray-800 text-yellow-400 hover:bg-gray-700"
+                    : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                }`}
+                aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
+              >
+                {darkMode ? (
+                  <svg 
+                    xmlns="http://www.w3.org/2000/svg" 
+                    className="h-5 w-5 sm:h-6 sm:w-6" 
+                    fill="none" 
+                    viewBox="0 0 24 24" 
+                    stroke="currentColor"
+                  >
+                    <path 
+                      strokeLinecap="round" 
+                      strokeLinejoin="round" 
+                      strokeWidth={2} 
+                      d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" 
+                    />
+                  </svg>
+                ) : (
+                  <svg 
+                    xmlns="http://www.w3.org/2000/svg" 
+                    className="h-5 w-5 sm:h-6 sm:w-6" 
+                    fill="none" 
+                    viewBox="0 0 24 24" 
+                    stroke="currentColor"
+                  >
+                    <path 
+                      strokeLinecap="round" 
+                      strokeLinejoin="round" 
+                      strokeWidth={2} 
+                      d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" 
+                    />
+                  </svg>
+                )}
+              </button>
+            </div>
 
-      {error && <p className="text-red-600 mb-4">{error}</p>}
-
-      {/* Weather Display */}
-      {darkMode ? (
-        <DarkWeather data={currentWeather} />
-      ) : (
-        <CurrentWeather data={currentWeather} />
-      )}
-
-      {/* Toggle Buttons for Forecast/Hourly */}
-      {forecast && (
-        <div className="mt-[-850px] ml-[1450px] w-[300px] flex gap-4">
-          <button
-            onClick={() => setShowHourly(false)}
-            className={`px-4 py-2 rounded-md font-semibold shadow ${
-              !showHourly
-                ? "bg-blue-700 text-white"
-                : darkMode
-                ? "bg-gray-800 text-white"
-                : "bg-white text-blue-700"
-            }`}
-          >
-            Show Forecast
-          </button>
-          <button
-            onClick={() => setShowHourly(true)}
-            className={`px-4 py-2 rounded-md font-semibold shadow ${
-              showHourly
-                ? "bg-blue-700 text-white"
-                : darkMode
-                ? "bg-gray-800 text-white"
-                : "bg-white text-blue-700"
-            }`}
-          >
-            Show Hourly
-          </button>
+            {error && (
+              <div className={`mt-2 p-2 rounded-lg text-sm ${
+                darkMode ? "bg-red-900 text-red-100" : "bg-red-100 text-red-700"
+              }`}>
+                {error}
+              </div>
+            )}
+          </div>
         </div>
-      )}
 
-      {/* Conditional Display */}
-      {forecast && !showHourly && (
-        darkMode ? <DarkForecast data={forecast} /> : <Forecast data={forecast} />
-      )}
-      {forecast && showHourly && (
-        <HourlyForecast data={forecast} darkMode={darkMode} />
-      )}
+        {/* Main Content Area */}
+        <div className="flex-1 overflow-hidden px-4 sm:px-6 pb-4">
+          <div className="h-full max-w-[1920px] mx-auto">
+            <div className="h-full grid grid-cols-1 lg:grid-cols-3 gap-4">
+              {/* Current Weather - Left Side */}
+              <div className="lg:col-span-1 overflow-hidden">
+                <CurrentWeather data={currentWeather} darkMode={darkMode} />
+              </div>
+
+              {/* Forecast/Hourly - Right Side */}
+              <div className="lg:col-span-2 flex flex-col overflow-hidden">
+                {forecast && (
+                  <>
+                    {/* Toggle Buttons */}
+                    <div className="flex justify-center gap-2 mb-2 flex-shrink-0">
+                      <button
+                        onClick={() => setShowHourly(false)}
+                        className={`px-4 py-2 rounded-lg font-semibold shadow-md transition-colors text-sm ${
+                          !showHourly
+                            ? "bg-blue-700 text-white"
+                            : darkMode
+                            ? "bg-gray-800 text-white hover:bg-gray-700"
+                            : "bg-white text-blue-700 hover:bg-blue-50"
+                        }`}
+                      >
+                        Forecast
+                      </button>
+                      <button
+                        onClick={() => setShowHourly(true)}
+                        className={`px-4 py-2 rounded-lg font-semibold shadow-md transition-colors text-sm ${
+                          showHourly
+                            ? "bg-blue-700 text-white"
+                            : darkMode
+                            ? "bg-gray-800 text-white hover:bg-gray-700"
+                            : "bg-white text-blue-700 hover:bg-blue-50"
+                        }`}
+                      >
+                        Hourly
+                      </button>
+                    </div>
+
+                    {/* Forecast/Hourly Display */}
+                    <div className="flex-1 overflow-hidden">
+                      {!showHourly ? (
+                        <Forecast data={forecast} darkMode={darkMode} />
+                      ) : (
+                        <HourlyForecast data={forecast} darkMode={darkMode} />
+                      )}
+                    </div>
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
