@@ -14,16 +14,16 @@ export const CurrentWeather: React.FC<CurrentWeatherProps> = ({ data, darkMode =
   const getIconPath = (condition: string) => {
     switch (condition) {
       case "clear":
-        return "public/sun-removebg-preview.png";
+        return "/sun-removebg-preview.png";
       case "rain":
-        return "public/rain-removebg-preview.png";
+        return "/rain-removebg-preview.png";
       case "clouds":
       case "partly cloudy":
-        return "public/unnamed__7_-removebg-preview.png";
+        return "/unnamed__7_-removebg-preview.png";
       case "thunderstorm":
-        return "public/thunder-removebg-preview.png";
+        return "/thunder-removebg-preview.png";
       default:
-        return "public/unnamed__7_-removebg-preview.png";
+        return "/unnamed__7_-removebg-preview.png";
     }
   };
 
