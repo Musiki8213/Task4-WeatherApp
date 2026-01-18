@@ -25,17 +25,17 @@ export const Forecast: React.FC<ForecastProps> = ({ data, darkMode = false }) =>
     switch (condition.toLowerCase()) {
       case "clear":
       case "sunshine": 
-        return "public/sun-removebg-preview.png";
+        return "/sun-removebg-preview.png";
       case "rain":
       case "rainstorm":
-        return "public/rain-removebg-preview.png";
+        return "/rain-removebg-preview.png";
       case "clouds":
       case "partly cloudy": 
-        return "public/unnamed__7_-removebg-preview.png";
+        return "/unnamed__7_-removebg-preview.png";
       case "thunderstorm":
-        return "public/thunder-removebg-preview.png";
+        return "/thunder-removebg-preview.png";
       default:
-        return "public/unnamed__7_-removebg-preview.png"; 
+        return "/unnamed__7_-removebg-preview.png"; 
     }
   };
 
